@@ -1,0 +1,97 @@
+Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+
+Example 1:
+Input: "babad"
+Output: "bab"
+Note: "aba" is also a valid answer.
+
+Example 2:
+Input: "cbbd"
+Output: "bb"
+
+class Solution:
+    def longestPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        
+# ==== Manacher algorithm        
+        T = "#".join("^{}$".format(s))
+        n = len(T)
+        P = [0] * n
+        C = R = 0
+        
+        for i in range(1, n - 1):
+            P[i] = (R > i) and min(R - i, P[2 * C - i])
+            while T[i + 1 + P[i]] == T[i - 1 - P[i]]:
+                P[i] += 1
+                
+            if i + P[i] > R:
+                C, R = i, i + P[i]
+        
+        maxLen, centerIndex = max((n, i) for i, n in enumerate(P))
+        return s[(centerIndex - maxLen) // 2 : (centerIndex + maxLen) // 2]
+        
+# ==== O(n^2)
+#         result = s[-1:]
+#        
+#         for i in range(len(s) // 2):
+#             res = self.helper(s, i, i)
+#             if len(res) > len(result):
+#                 result = res
+#             res = self.helper(s, i, i + 1)
+#             if len(res) > len(result):
+#                 result = res
+#
+#         for i in range(len(s) // 2, len(s)):
+#             res = self.helper(s, i, i)
+#             if len(res) > len(result):
+#                 result = res
+#                 # early stop
+#                 if len(res) == (len(s) - i) * 2 - 1:
+#                     return result
+#             res = self.helper(s, i, i + 1)
+#             if len(res) > len(result):
+#                 result = res
+#                 # early stop
+#                 if len(res) == (len(s) - i - 1) * 2:
+#                     return result
+#                
+#         return result
+#    
+#     def helper(self, s, left, right):
+#         while left >= 0 and right < len(s) and s[left] == s[right]:
+#             left -= 1
+#             right += 1
+#         return s[left+1:right]
+        
+        
+# ==== O(n^2~n^3)        
+#         for i in range(0, len(s) - 1):
+#             window = len(s) - i
+#            
+#             for j in range(0, i + 1):
+#                 if window % 2 == 0:
+#                     oppo_l = 1
+#                     oppo_r = 0
+#                     tmp = 0
+#                 else:
+#                     oppo_l = 1
+#                     oppo_r = 1
+#                     tmp = 1
+#                 # print('window', window, 'oppo', oppo,)
+#                 for k in range(window // 2):
+#                     # print(window//2, j, k, oppo, s[(window // 2) - k + j - oppo], s[(window // 2) + k + j + oppo])
+#                     if s[(window // 2) - k + j - oppo_l] == s[(window // 2) + k + j + oppo_r]:
+#                         tmp += 2
+#                         print(window, j, k, oppo_r, (window // 2) - k + j - oppo_l, (window // 2) + k + j + oppo_r, result, tmp, s[(window // 2) - k + j - oppo_l : (window // 2) + k + j + oppo_r + 1])
+#                     if tmp > max_result:
+#                         result = s[(window // 2) - k + j - oppo_l : (window // 2) + k + j + oppo_r + 1]
+#                         max_result = tmp
+#                         if tmp >= window:
+#                             return result
+#                     else:
+#                         break
+#                                        
+#         return result
