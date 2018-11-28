@@ -1,0 +1,94 @@
+Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+
+For example, this binary tree [1,2,2,3,4,4,3] is symmetric:
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+
+But the following [1,2,2,null,3,null,3] is not:
+    1
+   / \
+  2   2
+   \   \
+   3    3
+
+Note:
+Bonus points if you could solve it both recursively and iteratively. 
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    def isSymmetric(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+# ==== seperate two tree, use pre-order to compare
+        if root is None:
+            return True
+        
+        leftBT = self.printBT(root.left)
+        rightBT = self.reversedPrintBT(root.right)
+        # print(leftBT)
+        # print(rightBT)
+        
+        return leftBT == rightBT
+# ==== Iteration Version, Runtime: 44 ms
+    def printBT(self, root):
+        nodeStack = []
+        nodeStack.append(root)
+        result = []
+        
+        while len(nodeStack) > 0:
+            node = nodeStack.pop()
+            if node:
+                result += [node.val]
+            else:
+                result += [None]
+                continue
+            if node.left is None and node.right is None:
+                continue
+            else:
+                nodeStack.append(node.right)
+                nodeStack.append(node.left)
+        return result
+    
+    def reversedPrintBT(self, root):
+        nodeStack = []
+        nodeStack.append(root)
+        result = []
+        
+        while len(nodeStack) > 0:
+            node = nodeStack.pop()
+            if node:
+                result += [node.val]
+            else:
+                result += [None]
+                continue
+            if node.left is None and node.right is None:
+                continue
+            else:
+                nodeStack.append(node.left)
+                nodeStack.append(node.right)
+        return result
+    
+# ==== Recursive Version, Runtime: 44 ms    
+    def printBT(self, root):
+        if root is None:
+            return [None]
+        if root.left is None and root.right is None:
+            return [root.val]
+        return [root.val] + self.printBT(root.left) + self.printBT(root.right)
+    
+    def reversedPrintBT(self, root):
+        if root is None:
+            return [None]
+        if root.left is None and root.right is None:
+            return [root.val]
+        return [root.val] + self.reversedPrintBT(root.right) + self.reversedPrintBT(root.left)
