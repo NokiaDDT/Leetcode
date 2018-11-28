@@ -30,7 +30,8 @@ class Solution:
         :type root: TreeNode
         :rtype: int
         """
-        
+
+# ==== Divide subtree, find out which is max path to add, Runtime: 112 ms
         self.minInt = sys.maxsize * -1 - 1
         self.max = self.minInt
         
