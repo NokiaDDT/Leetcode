@@ -1,0 +1,61 @@
+Given inorder and postorder traversal of a tree, construct the binary tree.
+
+Note:
+You may assume that duplicates do not exist in the tree.
+
+For example, given
+inorder = [9,3,15,20,7]
+postorder = [9,15,7,20,3]
+Return the following binary tree:
+    3
+   / \
+  9  20
+    /  \
+   15   7
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def buildTree(self, inorder, postorder):
+        """
+        :type inorder: List[int]
+        :type postorder: List[int]
+        :rtype: TreeNode
+        """
+        
+# ==== from discussion, same idea but more shortly, Runtime: 164 ms
+        if not inorder or not postorder:
+            return None
+        
+        tree = TreeNode(postorder.pop())
+        index = inorder.index(tree.val)
+        # important, right first !!!!
+        tree.right = self.buildTree(inorder[index + 1:], postorder)
+        tree.left = self.buildTree(inorder[:index], postorder)
+        
+        return tree
+
+# ==== Use most right postorder as root to construct a tree, and separate it in inorder, Runtime: 668 ms
+        # print(inorder)
+        # print(postorder)
+        root_val = None
+        for i in postorder[::-1]:
+            if i in inorder:
+                root_val = i
+                break
+        # print(root_val)
+        tree = None
+        if root_val is not None:
+            tree = TreeNode(root_val)
+            root_index = inorder.index(root_val)
+            newCopy = postorder.copy()
+            newCopy.remove(root_val)
+            tree.left = self.buildTree(inorder[0:root_index], newCopy)
+            tree.right = self.buildTree(inorder[root_index + 1:], newCopy)
+        
+        return tree
