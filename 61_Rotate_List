@@ -1,0 +1,74 @@
+Given a linked list, rotate the list to the right by k places, where k is non-negative.
+
+Example 1:
+
+Input: 1->2->3->4->5->NULL, k = 2
+Output: 4->5->1->2->3->NULL
+Explanation:
+rotate 1 steps to the right: 5->1->2->3->4->NULL
+rotate 2 steps to the right: 4->5->1->2->3->NULL
+
+Example 2:
+
+Input: 0->1->2->NULL, k = 4
+Output: 2->0->1->NULL
+Explanation:
+rotate 1 steps to the right: 2->0->1->NULL
+rotate 2 steps to the right: 1->2->0->NULL
+rotate 3 steps to the right: 0->1->2->NULL
+rotate 4 steps to the right: 2->0->1->NULL
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def rotateRight(self, head, k):
+        """
+        :type head: ListNode
+        :type k: int
+        :rtype: ListNode
+        """
+
+# ==== My solution, dynamic concate, Runtime: 44 ms
+        if k == 0 or not head or not head.next:
+            return head
+        
+        k_head = head
+        k_tail = head.next
+        early_stop = False
+        node_count = 1
+        
+        for _ in range(k - 1):
+            node_count += 1
+            if k_tail.next:
+                k_tail = k_tail.next
+            else:
+                # print("early stop at", k_tail.val, ", node count is", node_count)
+                early_stop = True
+                break
+            
+        while k_tail.next:
+            k_head = k_head.next
+            k_tail = k_tail.next
+            
+        # print(k_head.val, k_tail.val)
+        
+        # if early stop, that's mean k is large than node count, re-compute k
+        if early_stop:
+            k = k % node_count
+            if k == 0:
+                return head
+            for _ in range(node_count - k - 1):
+                k_head = k_head.next
+            # print('new k_head at', k_head.val)
+            # the following step is same with non-early_stop
+            
+        tmp = ListNode(None)
+        tmp.next = k_head.next
+        k_tail.next = head
+        k_head.next = None
+
+        return tmp.next
