@@ -1,0 +1,71 @@
+Given a linked list, swap every two adjacent nodes and return its head.
+
+Example:
+Given 1->2->3->4, you should return the list as 2->1->4->3.
+
+Note:
+    Your algorithm should use only constant extra space.
+    You may not modify the values in the list's nodes, only nodes itself may be changed.
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def swapPairs(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+# ==== Submission, Runtime: 32 ms
+        result = ListNode(None)
+        result.next = head
+        curr = result
+        
+        while curr.next and curr.next.next:
+            p1 = curr.next
+            p2 = curr.next.next
+            
+            curr.next = p2
+            p1.next = p2.next
+            p2.next = p1
+            
+            curr = p1
+            
+        return result.next
+        
+# ==== My solution, Runtime: 48 ms
+        if not head or not head.next:
+            return head
+        
+        l = head
+        r = head.next
+        result  = ListNode(None)
+        tmp = result
+        tmp.next = ListNode(r.val)
+        # print(r.val)
+        tmp = tmp.next
+        tmp.next = ListNode(l.val)
+        # print(l.val)
+        tmp = tmp.next
+        
+        l = r.next
+        
+        while l:
+            r = l.next
+            if r:
+                tmp.next = ListNode(r.val if r else None)
+                # print(r.val if r else r)
+                tmp = tmp.next
+            tmp.next = ListNode(l.val)
+            # print(l.val)
+            tmp = tmp.next
+            
+            if r:
+                l = r.next
+            else:
+                l = None
+                
+        return result.next
