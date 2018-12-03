@@ -1,0 +1,131 @@
+Given a singly linked list L: L0→L1→…→Ln-1→Ln,
+reorder it to: L0→Ln→L1→Ln-1→L2→Ln-2→…
+You may not modify the values in the list's nodes, only nodes itself may be changed.
+
+Example 1:
+Given 1->2->3->4, reorder it to 1->4->2->3.
+
+Example 2:
+Given 1->2->3->4->5, reorder it to 1->5->2->4->3.
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+# ===== from Submission, O(1.5N), Runtime: 100 ms
+    def splitList(self, head):
+        fast = head
+        slow = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next
+            fast = fast.next
+
+        middle = slow.next
+        slow.next = None
+
+        return head, middle
+        
+    def reverseList(self, head):
+        last = None
+        currentNode = head
+
+        while currentNode:
+            nextNode = currentNode.next
+            currentNode.next = last
+            last = currentNode
+            currentNode = nextNode
+
+        return last
+        
+    def mergeList(self, a, b):
+        tail = a
+        head = a
+
+        a = a.next
+        while b:
+            tail.next = b
+            tail = tail.next
+            b = b.next
+            if a:
+                a, b = b, a
+        return head
+    
+    def reorderList(self, head):
+        """
+        :type head: ListNode
+        :rtype: void Do not return anything, modify head in-place instead.
+        """
+        
+# ==== from Submission, fastest, o(1.5N), Runtime: 100 ms
+        if not head or not head.next: return
+    
+        list1, list2 = self.splitList(head)
+        list2 = self.reverseList(list2)
+        head = self.mergeList(head, list2)
+        
+        
+# ==== from Submission, O(2N), Runtime: 100 ms
+        # ==== Runtime: 100 ms
+        if not head: return
+        
+        # ==== Runtime: 104 ms
+        # if not head:
+        #     return
+    
+        # ==== Runtime: 108 ms
+        # if not head or not head.next:
+        #     return
+        
+        # ==== Runtime: 108 ms
+        # if not head or not head.next: return
+        
+         node_stack = []
+         walking_node = head
+        
+         while walking_node:
+             node_stack.append(walking_node)
+             walking_node = walking_node.next
+        
+         node_count = len(node_stack)
+         half_node_count = node_count // 2
+         for i in range(len(node_stack)):
+             if i < half_node_count:
+                 node_stack[i].next = node_stack[node_count - i - 1]
+             elif i == half_node_count:
+                 node_stack[i].next = None
+             else:
+                 node_stack[i].next = node_stack[node_count - i]
+         return
+
+# ==== My solution, O(1.5N), Runtime: 144 ms
+         if not head or not head.next:
+             return
+        
+         node_stack = []
+         value_stack = []
+         walking_node = head
+        
+         while walking_node:
+             inserted_node = ListNode(None)
+             node_stack.append(inserted_node)
+             value_stack.append(walking_node.val)
+             inserted_node.next = walking_node.next
+             walking_node.next = inserted_node
+             walking_node = walking_node.next.next
+        
+         node_count = len(value_stack)
+         half_node_count = node_count // 2
+         for i in range(half_node_count):
+             node_stack[i].val = value_stack[node_count - i - 1]
+        
+        
+         # print(self, node_stack[half_node_count - 1].val)
+         if node_count % 2 == 0:
+             node_stack[half_node_count - 1].next = None
+         else:
+             node_stack[half_node_count - 1].next.next = None
+        
+         return
