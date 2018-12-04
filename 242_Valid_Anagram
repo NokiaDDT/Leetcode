@@ -1,0 +1,99 @@
+Given two strings s and t , write a function to determine if t is an anagram of s.
+
+Example 1:
+Input: s = "anagram", t = "nagaram"
+Output: true
+
+Example 2:
+Input: s = "rat", t = "car"
+Output: false
+
+Note:
+You may assume the string contains only lowercase alphabets.
+Follow up:
+What if the inputs contain unicode characters? How would you adapt your solution to such case?
+
+from collections import Counter
+class Solution:
+# # ==== Use QuickSort, Time Limit Exceeded
+    def myQuickSort(self, s):
+        if len(s) <= 1:
+            return s
+        partition = s[0]
+        
+        l, r = [], []
+        for i in range(1, len(s)):
+            if s[i] > partition:
+                r.append(s[i])
+            else:
+                l.append(s[i])
+        # print(l, partition, r)
+        return self.myQuickSort(l) + [partition] + self.myQuickSort(r)
+
+# # # ==== Use MergeSort, Runtime: 1408 ms
+    def myMerge(self, l, r):
+        result = []
+        
+        l_index = r_index = 0
+        
+        while l_index < len(l) and r_index < len(r):
+            if l[l_index] < r[r_index]:
+                result.append(l[l_index])
+                l_index += 1
+            else:
+                result.append(r[r_index])
+                r_index += 1
+        if l_index != len(l):
+            result += l[l_index:]
+        elif r_index != len(r):
+            result += r[r_index:]
+        # print(result)
+        return result
+         
+        
+    def myMergeSort(self, s):
+        s_len = len(s)
+        if s_len <= 1:
+            return s
+        
+        l, r = s[:s_len // 2], s[s_len // 2:]
+        
+        
+        return self.myMerge(self.myMergeSort(l), self.myMergeSort(r))
+
+    def isAnagram(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: bool
+        """
+        
+# ==== from Submission, Runtime: 44 ms
+        if len(s) != len(t):
+            return False
+        
+        s = Counter(s)
+        t = Counter(t)
+        return s == t
+    
+# ==== My solution,
+        if len(s) != len(t):
+            return False
+        
+        s = list(s)
+        t = list(t)
+        
+# # ==== Use build-in sort, Runtime: 72 ms
+        s.sort()
+        t.sort()
+# # ==== Use MergeSort, Runtime: 992 ms
+        s = self.myMergeSort(s)
+        t = self.myMergeSort(t)
+# # ==== Use QuickSort, , Time Limit Exceeded
+        s = self.myQuickSort(s)
+        t = self.myQuickSort(t)
+        
+#         # print(s, t)
+        
+        return s == t
+            
