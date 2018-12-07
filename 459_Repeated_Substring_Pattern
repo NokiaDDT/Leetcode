@@ -1,0 +1,64 @@
+Given a non-empty string check if it can be constructed by taking a substring of it and appending multiple copies of the substring together. You may assume the given string consists of lowercase English letters only and its length will not exceed 10000.
+
+Example 1:
+Input: "abab"
+Output: True
+Explanation: It's the substring "ab" twice.
+
+Example 2:
+Input: "aba"
+Output: False
+
+Example 3:
+Input: "abcabcabcabc"
+Output: True
+Explanation: It's the substring "abc" four times. (And the substring "abcabc" twice.)
+
+class Solution:
+    def repeatedSubstringPattern(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+# ==== from Submission, same idea but more beautiful, Runtime: 44~96 ms
+        n = len(s)
+        for i in range(n // 2, 0, -1):
+            if not n % i:
+                pattern = s[:i]
+                if s == pattern * (n // i):
+                    return True
+        
+        return False
+        
+# ==== My 1st solution, Runtime: 100 ms
+        lenOfString = len(s)
+        if lenOfString == 1:
+            return False
+        
+        stack = ""
+        for i in range(lenOfString // 2):
+            stack += s[i]
+            # print(stack)
+            lenOfStack = len(stack)
+            if lenOfString % lenOfStack != 0:
+                continue
+            else:
+                matched = True
+                for j in range(1, lenOfString // lenOfStack):
+                    if stack != s[j * lenOfStack : (j + 1) * lenOfStack]:
+                        matched = False
+                        break
+                    # else:
+                    #     print(s[j * lenOfStack : (j + 1) * lenOfStack])
+                if matched:
+                    return True
+                
+        return False
+
+TestCase:
+"zzz"
+"abcabcabcabc"
+"bb"
+"a"
+"abab"
+"abcabcd"
