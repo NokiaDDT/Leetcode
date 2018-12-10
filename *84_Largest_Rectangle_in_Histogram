@@ -11,3 +11,47 @@ Explain:
 2. find right bound first (increase if match)
 3. find left bound in stack
 4. compare max
+
+class Solution:
+    def largestRectangleArea(self, heights):
+        """
+        :type heights: List[int]
+        :rtype: int
+        """
+# ==== from Submission, Runtime: 64 ms
+        heights.append(0)
+        height_stack = [-1]
+        result = 0
+        
+        for i in range(len(heights)):
+            while height_stack and heights[i] < heights[height_stack[-1]]:
+                h = heights[height_stack.pop()]
+                w = i - 1 - height_stack[-1]
+                result = max(result, h * w)
+            height_stack.append(i)
+            
+        return result
+        
+# ======================== old one        
+#         myCopy = heights.copy()
+#         maxOutput = 0
+        
+        
+#         for candidate in range(len(heights)):
+#             currentValue = heights[candidate]
+#             preIndex = candidate
+#             postIndex = candidate + 1
+#             for pre in reversed(range(candidate)):
+#                 if currentValue <= heights[pre]:
+#                     preIndex = pre
+#                 else:
+#                     break
+#             for post in range(candidate+1, len(heights)):
+#                 if currentValue <= heights[post]:
+#                     postIndex = post + 1
+#                 else:
+#                     break
+#             output = (postIndex - preIndex) * currentValue
+#             # print(candidate, preIndex, postIndex, currentValue, output)
+#             maxOutput = output if maxOutput < output else maxOutput
+#         return maxOutput
