@@ -1,0 +1,50 @@
+The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
+P   A   H   N
+A P L S I I G
+Y   I   R
+And then read line by line: "PAHNAPLSIIGYIR"
+Write the code that will take a string and make this conversion given a number of rows:
+string convert(string s, int numRows);
+
+Example 1:
+Input: s = "PAYPALISHIRING", numRows = 3
+Output: "PAHNAPLSIIGYIR"
+
+Example 2:
+Input: s = "PAYPALISHIRING", numRows = 4
+Output: "PINALSIGYAHRPI"
+Explanation:
+P     I    N
+A   L S  I G
+Y A   H R
+P     I
+
+class Solution:
+    def convert(self, s, numRows):
+        """
+        :type s: str
+        :type numRows: int
+        :rtype: str
+        """
+        
+# ==== My solution, Runtime: 80 ms
+        if numRows == 1 or not s or len(s) <= numRows:
+            return s
+        
+        result = [''] * numRows
+        index = 0
+        revert = False
+        # print(result)
+        for i in s:
+            result[index] = result[index] + i
+            # print(result, index)
+            
+            if revert:
+                index -= 1
+            else:
+                index += 1
+            
+            if index == 0 or index == numRows - 1:
+                revert = not revert
+                
+        return ''.join(result)
