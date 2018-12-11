@@ -1,0 +1,48 @@
+Given a list of non negative integers, arrange them such that they form the largest number.
+
+Example 1:
+Input: [10,2]
+Output: "210"
+
+Example 2:
+Input: [3,30,34,5,9]
+Output: "9534330"
+
+import functools
+# ==== My solution, Runtime: 60 ms
+def compare(num1, num2):
+    if int(str(num1) + str(num2)) > int(str(num2) + str(num1)):
+        return 1
+    else:
+        return -1
+    
+# ==== My solution, Runtime: 52 ms
+def compare(num1, num2)
+    num1 = str(num1)
+    num2 = str(num2)
+    
+    for i, j in zip(num1 + num2, num2 + num1):
+        if i > j:
+            return 1
+        elif i == j:
+            continue
+        else:
+            return -1
+    return 1
+    
+        
+class Solution:
+    def largestNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: str
+        """
+        
+        nums.sort(key=functools.cmp_to_key(compare), reverse=True)
+        # print(nums)
+        result = ''
+        for i in nums:
+            result += str(i)
+        if int(result) == 0:
+            return '0'
+        return result
