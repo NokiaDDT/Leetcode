@@ -1,0 +1,122 @@
+Given a 2D board and a list of words from the dictionary, find all words in the board.
+Each word must be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.
+
+Example:
+Input: 
+words = ["oath","pea","eat","rain"] and board =
+[
+  ['o','a','a','n'],
+  ['e','t','a','e'],
+  ['i','h','k','r'],
+  ['i','f','l','v']
+]
+Output: ["eat","oath"]
+
+Note:
+You may assume that all inputs are consist of lowercase letters a-z.
+
+# ==== My solution, use Trie(), Runtime: 1036 ms
+class TrieNode:
+    def __init__(self):
+        self.root = {}
+    def insert(self, word):
+        currentNode = self.root
+        for i in word:
+            if i not in currentNode:
+                currentNode[i] = {}
+                
+            currentNode = currentNode[i]
+        currentNode['#end'] = {}
+    
+    def search(self, word):
+        currentNode = self.root
+        for i in word:
+            if i in currentNode:
+                currentNode = currentNode[i]
+            else:
+                return False
+        return "#end" in currentNode
+    
+    def prefix(self, word):
+        currentNode = self.root
+        for i in word:
+            if i in currentNode:
+                currentNode = currentNode[i]
+            else:
+                return False
+        return True
+    
+    def isPrefixOrWord(self, word):
+        # return  0: None, 1: prefix, 2: word
+        currentNode = self.root
+        for i in word:
+            if i in currentNode:
+                currentNode = currentNode[i]
+            else:
+                return 0
+        if "#end" in currentNode:
+            return 2
+        else:
+            return 1
+
+class Solution:
+    def findNextPath(self, passed):
+        nextPath = []
+        x, y = passed[-1]
+        
+        # create up/down/left/right point
+        uPath = (x - 1, y)
+        dPath = (x + 1, y)
+        lPath = (x, y - 1)
+        rPath = (x, y + 1)
+        
+        if uPath[0] >= 0 and uPath not in passed:
+            nextPath.append(uPath)
+        if dPath[0] < self.rowBound and dPath not in passed:
+            nextPath.append(dPath)
+        if lPath[1] >= 0 and lPath not in passed:
+            nextPath.append(lPath)
+        if rPath[1] < self.colBound and rPath not in passed:
+            nextPath.append(rPath)
+        
+        # print('nextPath', nextPath)
+        return nextPath
+    
+    def getSomething(self, board, passed):
+        # print('passed', passed)
+        if passed:
+            wordCandicate = ''.join([board[m][n] for m,n in passed])
+            trieResult = self.trie.isPrefixOrWord(wordCandicate)
+            # print(wordCandicate, trieResult)
+            if trieResult == 2:
+                self.result.append(wordCandicate)
+            if trieResult != 0:
+                for i in self.findNextPath(passed):
+                    tmpPassed = passed.copy()
+                    tmpPassed.append(i)
+                    self.getSomething(board, tmpPassed)
+    
+    def findWords(self, board, words):
+        """
+        :type board: List[List[str]]
+        :type words: List[str]
+        :rtype: List[str]
+        """
+        
+        self.trie = TrieNode()
+        for word in words:
+            self.trie.insert(word)
+            
+        self.rowBound = len(board)
+        self.colBound = len(board[0])
+        
+        self.result = []
+        
+        for i in range(self.rowBound):
+            for j in range(self.colBound):
+                passed = [(i, j)]
+                self.getSomething(board, passed)
+        
+        return list(set(self.result))
+        
+        
