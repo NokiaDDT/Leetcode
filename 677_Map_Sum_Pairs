@@ -1,0 +1,82 @@
+ Implement a MapSum class with insert, and sum methods.
+For the method insert, you'll be given a pair of (string, integer). The string represents the key and the integer represents the value. If the key already existed, then the original key-value pair will be overridden to the new one.
+For the method sum, you'll be given a string representing the prefix, and you need to return the sum of all the pairs' value whose key starts with the prefix.
+
+Example 1:
+Input: insert("apple", 3), Output: Null
+Input: sum("ap"), Output: 3
+Input: insert("app", 2), Output: Null
+Input: sum("ap"), Output: 5
+
+# ==== from Submission, Runtime: 36 ms
+class MapSum:
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.d = {}
+
+    def insert(self, key, val):
+        """
+        :type key: str
+        :type val: int
+        :rtype: void
+        """
+        self.d[key] = val
+
+    def sum(self, prefix):
+        """
+        :type prefix: str
+        :rtype: int
+        """
+        return sum(v for (k, v) in self.d.items() if k[:len(prefix)] == prefix)
+
+# ==== My solution, Runtime: 40 ms
+class MapSum:
+    
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.trie = {}
+        self.map = {}
+
+    def insert(self, key, val):
+        """
+        :type key: str
+        :type val: int
+        :rtype: void
+        """
+        delta = val - self.map.get(key, 0)
+        self.map[key] = val
+        
+        currentNode = self.trie
+        for i in key:
+            if i not in currentNode:
+                currentNode[i] = {}
+            currentNode = currentNode[i]
+            if '#end' in currentNode:
+                currentNode['#end'] = {'val':delta + currentNode['#end']['val']}
+            else:
+                currentNode['#end'] = {'val':delta}
+
+    def sum(self, prefix):
+        """
+        :type prefix: str
+        :rtype: int
+        """
+        currentNode = self.trie
+        for i in prefix:
+            if i in currentNode:
+                currentNode = currentNode[i]
+                # print(currentNode)
+            else:
+                return 0
+        
+        return currentNode['#end']['val']
+
+# Your MapSum object will be instantiated and called as such:
+# obj = MapSum()
+# obj.insert(key,val)
+# param_2 = obj.sum(prefix)
