@@ -1,0 +1,81 @@
+ Solve a given equation and return the value of x in the form of string "x=#value". The equation contains only '+', '-' operation, the variable x and its coefficient.
+If there is no solution for the equation, return "No solution".
+If there are infinite solutions for the equation, return "Infinite solutions".
+If there is exactly one solution for the equation, we ensure that the value of x is an integer.
+
+Example 1:
+Input: "x+5-3+x=6+x-2"
+Output: "x=2"
+
+Example 2:
+Input: "x=x"
+Output: "Infinite solutions"
+
+Example 3:
+Input: "2x=x"
+Output: "x=0"
+
+Example 4:
+Input: "2x+3x-6x=x+2"
+Output: "x=-1"
+
+Example 5:
+Input: "x=x+2"
+Output: "No solution"
+
+class Solution:
+    def solveEquation(self, equation):
+        """
+        :type equation: str
+        :rtype: str
+        """
+
+# ==== My solution, Runtime: 36 ms
+        numsStack = [0]
+        numsXStack = [0]
+        nums = '#'
+        numsX = 0
+        sign = 1
+        previousOp = '+'
+        
+        for j, i in enumerate(equation):
+            if i.isdigit():
+                if nums == '#':
+                    nums = int(i) * sign
+                else:
+                    nums = 10 * nums + int(i) * sign
+                # print(i, nums, sign)
+            elif i == 'x':
+                if nums == '#':
+                    numsX = sign
+                else:
+                    numsX = nums
+                nums = '#'
+                # print(i, numsX, sign)
+            
+            if i == '+' or i == '-' or j == len(equation) - 1 or i == '=':
+                if previousOp == '+':
+                    if nums == '#':
+                        numsXStack.append(numsXStack.pop() + numsX)
+                    else:
+                        numsStack.append(numsStack.pop() + nums)
+                elif previousOp == '-':
+                    if nums == '#':
+                        numsXStack.append(numsXStack.pop() - numsX)
+                    else:
+                        numsStack.append(numsStack.pop() - nums)
+                nums = '#'
+                numsX = 0
+                previousOp = i
+                if i == '=':
+                    sign = -1
+                    previousOp = '+'
+                
+                # print(i, previousOp, numsXStack, numsStack, numsX, nums, sign)
+                
+        if numsXStack[0] == 0 and numsStack[0] != 0:
+            return "No solution"
+        if numsXStack[0] == 0 and numsStack[0] == 0:
+            return "Infinite solutions"
+        result = -1 * numsStack[0] // numsXStack[0] if numsStack[0] % numsXStack[0] == 0 else -1 * numsStack[0] / numsXStack[0]
+        return "x=" + str(result)
