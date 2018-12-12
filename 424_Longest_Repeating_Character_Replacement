@@ -1,0 +1,95 @@
+Given a string that consists of only uppercase English letters, you can replace any letter in the string with another letter at most k times. Find the length of a longest substring containing all repeating letters you can get after performing the above operations.
+
+Note:
+Both the string's length and k will not exceed 104.
+
+Example 1:
+Input:
+s = "ABAB", k = 2
+Output:
+4
+Explanation:
+Replace the two 'A's with two 'B's or vice versa.
+
+Example 2:
+Input:
+s = "AABABBA", k = 1
+Output:
+4
+Explanation:
+Replace the one 'A' in the middle with 'B' and form "AABBBBA".
+The substring "BBBB" has the longest repeating letters, which is 4.
+
+# class LRC:
+#     def __init__(self, char, k, index):
+#         self.char = char
+#         self.k = k
+#         self.maxLength = 1
+#         self.index = index
+
+class Solution:
+    def characterReplacement(self, s, k):
+        """
+        :type s: str
+        :type k: int
+        :rtype: int
+        """
+# ==== from Submission, Same Algroithm, replace collections.Counter() with collection.defaultdict(int), Runtime: 88 ms
+        count = collections.defaultdict(int)
+    
+        l = 0
+        maxWindow = 0
+        
+        for r in range(len(s)):
+            count[s[r]] += 1
+            maxWindow = max(maxWindow, count[s[r]])
+            if maxWindow + k < r - l + 1:
+                count[s[l]] -= 1
+                l += 1
+        return len(s) - l
+        
+# ==== from Discussion, Runtime: 172 ms
+# ==== use Sliding Window, if max_char_length + k > sliding_window, increase sliding_window, else shift sliding_window right
+        count = collections.Counter()
+        
+        l = 0
+        maxWindow = 0
+        
+        for r in range(len(s)):
+            count[s[r]] += 1
+            maxWindow = max(maxWindow, count[s[r]])
+            if maxWindow + k < r - l + 1:
+                count[s[l]] -= 1
+                l += 1
+        return len(s) - l
+        
+# ==== My solution, Time Limit Exceeded, 23 / 37 test cases passed.
+        lrcList = []
+        previousChar = ''
+        maxResult = 0
+        
+        for i in range(len(s)):
+            for lrc in lrcList:
+                if lrc.k >= 0 and lrc.char == s[i]:
+                    lrc.maxLength += 1
+                    if lrc.index - lrc.k < 0:
+                        maxResult = max(maxResult, lrc.maxLength + lrc.index)
+                    else:
+                        maxResult = max(maxResult, lrc.k + lrc.maxLength)
+                if lrc.k >= 0 and lrc.char != s[i]:
+                    lrc.maxLength += 1
+                    lrc.k -= 1
+                    if lrc.index - lrc.k < 0:
+                        maxResult = max(maxResult, lrc.maxLength + lrc.index)
+                    else:
+                        maxResult = max(maxResult, lrc.k + lrc.maxLength)
+                # print(lrc.char, lrc.k, lrc.maxLength)
+                
+                    
+                
+            if s[i] != previousChar:
+                lrc = LRC(s[i], k, i)
+                lrcList.append(lrc)
+        
+            previousChar = i
+        return maxResult
