@@ -1,0 +1,117 @@
+Given a Binary Search Tree (BST) with root node root, and a target value V, split the tree into two subtrees where one subtree has nodes that are all smaller or equal to the target value, while the other subtree has all nodes that are greater than the target value.  It's not necessarily the case that the tree contains a node with value V.
+Additionally, most of the structure of the original tree should remain.  Formally, for any child C with parent P in the original tree, if they are both in the same subtree after the split, then node C should still have the parent P.
+You should output the root TreeNode of both subtrees after splitting, in any order.
+
+Example 1:
+Input: root = [4,2,6,1,3,5,7], V = 2
+Output: [[2,1],[4,3,6,null,null,5,7]]
+Explanation:
+Note that root, output[0], and output[1] are TreeNode objects, not arrays.
+
+The given tree [4,2,6,1,3,5,7] is represented by the following diagram:
+          4
+        /   \
+      2      6
+     / \    / \
+    1   3  5   7
+
+while the diagrams for the outputs are:
+          4
+        /   \
+      3      6      and    2
+            / \           /
+           5   7         1
+
+class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+        
+def toTreeNode(list, i=0):
+    if i < len(list):
+        if not list[i]:
+            return None
+        root = TreeNode(list[i])
+        root.left = toTreeNode(list, (i + 1) * 2 - 1)
+        root.right = toTreeNode(list, (i + 1) * 2)
+        
+        return root
+        
+testCase1 = (toTreeNode([4,2,6,1,3,5,7]), 2)
+testCase2 = (toTreeNode([4,2,6,1,3,5,7]), 4)
+
+def listTreeNode(root):
+    nodes = [root]
+    nodeList = []
+    
+    while nodes:
+        i = nodes.pop(0)
+        if i:
+            nodeList.append(i.val)
+            if i.left:
+                nodes.append(i.left)
+            else:
+                node.append(None)
+            if i.right:
+                nodes.append(i.right)
+            else:
+                nodes.append(None)
+        else:
+            nodeList.append(None)
+            
+    index = 0
+    for i in reversed(nodeList):
+        if not i:
+            index += 1
+        else:
+            break
+    print(nodeList[:-index])
+    return nodeList[:-index])
+    
+def splitBst(root, v):
+    if not root:
+        return [[],[]]
+    
+    walkNodeParent = root
+    walkNode = root
+    while walkNode:
+        if walkNode.val == v:
+            break
+        elif walkNode.val > v:
+            walkNodeParent = walkNode
+            walkNode = walkNode.left
+        else:
+            waklNodeParent = walkNode
+            walkNode = walkNode.right
+    
+    if wakNode == walkNodeParent:
+        root = walkNode.right
+        waklNode.right = None
+    elif wakNodeParent.val > walkNode.val:
+        walkNodeParent.left = walkNode.right
+        walkNode.right = None
+    else:
+        walkNodeParent.right = walkNode.right
+        walkNode.right = None
+        
+splitBst(testCase1[0], testCase1[1])
+splitBst(testCase2[0], testCase2[1])
+    
+    
+    
+    
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
